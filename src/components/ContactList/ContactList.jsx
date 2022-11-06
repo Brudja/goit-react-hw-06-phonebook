@@ -1,12 +1,20 @@
-import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteContactAction } from 'redux/PhoneBookRedux/phonebookSlice';
+import { getFilteredContacts } from 'redux/PhoneBookRedux/selector';
 
-export const ContactList = ({deleteBtn, filterFn}) => {
+export const ContactList = () => {
+const contacts = useSelector(getFilteredContacts);
+const dispatch = useDispatch();
+const handleDeleteUser = id => {
+  dispatch(deleteContactAction(id))
+};
+
   return (
     <ul style={{
       listStyle: 'none',
       fontSize:'20px',
     }}>
-      {filterFn.map(item => (
+      {contacts.map(item => (
         <li key={item.id}>
           <p style={{
       margin: '10 auto'
@@ -17,15 +25,9 @@ export const ContactList = ({deleteBtn, filterFn}) => {
           <button style={{
           color:"red",
           backgroundColor: "gray",
-        }} onClick={() => deleteBtn(item.id)} type="button">Delete</button>
+        }} onClick={() => handleDeleteUser(item.id)} type="button">Delete</button>
         </li>
       ))}
     </ul>
   );
 };
-
-
-ContactList.propTypes = {
-  deleteBtn: PropTypes.func.isRequired,
-  filterFn: PropTypes.arrayOf(PropTypes.shape({name:PropTypes.string, number:PropTypes.string, id:PropTypes.string})).isRequired,
-}
